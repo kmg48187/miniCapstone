@@ -9,7 +9,6 @@ CREATE TABLE departments(
     contact_info text NOT NULL
 );
 
-
 CREATE TABLE faculty(
     id serial PRIMARY KEY,
     name text UNIQUE NOT NULL,
