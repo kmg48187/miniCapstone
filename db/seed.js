@@ -1,18 +1,24 @@
 import db from "#db/client";
-import { createEmployee } from "#db/queries/employees";
+import { createDepartment } from "./queries/departments";
+import { createFaculty } from "./queries/faculty";
 
 await db.connect();
-await seedEmployees();
+await seed();
 await db.end();
-console.log("🌱 Database seeded.");
+console.log("Database seeded.");
 
-async function seedEmployees() {
-  for (let i = 0; i < 15; i++) {
-    const employee = {
-      name: "Employee " + i,
-      birthday: "1001-10-01",
-      salary: Math.floor(Math.random() * 500000),
+async function seed() {
+    const imgData = fs.readFileSync('#businessman.jpg', {encoding: 'base64'});
+
+    for(let i = 0; i < 10; i++) {
+        const department = {
+            name: "Department" + i,
+            description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec quis commodo elit, in finibus libero. Proin venenatis quam tortor, id euismod ligula dapibus nec.",
+            images: imgData,
+            contact_info: "fake-email@fake-email.com"
+        };
+
+        //add seeding for faculty
+        
     };
-    await createEmployee(employee);
-  }
-}
+};
