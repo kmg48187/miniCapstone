@@ -18,7 +18,12 @@ async function seed() {
             contact_info: "fake-email@fake-email.com"
         };
 
-        //add seeding for faculty
-        
+        for(let i = 0; i < 10; i++) {
+        const department = {
+            name: "Department" + i,
+            description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec quis commodo elit, in finibus libero. Proin venenatis quam tortor, id euismod ligula dapibus nec.",
+            images: imgData,
+            contact_info: "fake-email@fake-email.com"
+        };
     };
-};
+}};
