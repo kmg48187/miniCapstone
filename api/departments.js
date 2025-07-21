@@ -1,68 +1,67 @@
-import db from "#db/client";
 
-export async function createDepartment(name, description, images, contact_info) {
-    const sql = `
-    INSERT INTO departments
-       (name, description, images, contact_info)
-    VALUES
-        ($1, $2, $3, $4)
-    RETURNING *
-    `;
-        const {
-            rows: [department],
-        } = await db.query(sql, [name, description, images, contact_info]);
-        return department;
-};
+import express from "express";
+const router = express.Router();
+export default router;
 
-export async function getDepartments(){
-    const sql = `
-    SELECT * 
-    FROM departments
-    `;
-    const { rows: departments} = await db.query(sql);
-    return departments;
-};
+import { 
+    createDepartment,
+    getDepartments,
+    getDepartmentById,
+    updateDepartment,
+    deleteDepartment,
+ } from "../db/queries/departments";
 
 
-export async function getDepartmentById(id) {
+router  
+    .route("/")
+    .get(async (req, res) => {
+        const departments = await getDepartments
+        res.send(departments)
+    })
+    .post(requireUser, async (req, res) => {
+        if (!req.body) return res.status(400).send("Request body is requied.");
 
-    const sql = `
-        SELECT *
-        FROM departments
-        WHERE id = $1
-        `;
-    const {
-        rows: [department],
-    } = await db.query(sql, [id]);
-    return department;   
-};
-
-export async function updateDepartment(id, name, bio, images, contact_info) {
-    const sql = `
-    UPDATE departments
-    SET
-        name = $2,
-        bio = $3, 
-        images = $4,
-        contact_info = $5
-        WHERE id = $1
-        RETURNING * 
-        `;
-        const {
-            rows: [department],
-        } = await db.query(sql [id, name, bio, images, contact_info]);
-        return department;
-}
+        const { name, description, banner_image, contact_info } = req.body;
+        if (!name || !description || !banner_image || !contact_info )
+            return res.status(400)
+                      .send("Missing required fields: name, description, banner_image, contact_info.");
+        const department = await createDepartment ({name, description, banner_image, contact_info});
+        res.status(201).send(department);
+    });
 
 
-export async function deleteDepartment(id) {
-    const sql = `
-    DELETE from departments
-    WHERE id = $1
-    RETURNING * 
-    `;
-    const {
-        rows: [department],
-     } = await db.query(sql [id]);
-        return department;
-}
+router.param("id", async (req, res, next, id) => {
+    const department = getDepartmentById(id);
+    if(!department) return res.status(404).send("Department not found.");
+
+    req.department = department;
+    next();
+});
+
+router.route("/:id").get((req, res) => {
+    res.send(req.department);
+    })
+    .delete(requireUser, async (req, res) => {
+        await deleteDepartment(req.department.id);
+        res.sendStatus(204);
+    })
+
+    .put(requireUser, async (req, res) => {
+        if (!req.body) return res.status(400).send("Request body is requied.");
+
+        const { name, description, images, contact_info } = req.body;
+        if (!name || !description || !banner_image || !contact_info )
+            return res.status(400)
+                      .send("Missing required fields: name, description, images, contact_info.");
+    
+
+    const department = await updateDepartment({
+         id: req.department.id,
+         name, 
+         description,
+         banner_image,
+         contact_info
+        });
+        res.send(department);
+});
+

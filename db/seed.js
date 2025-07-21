@@ -1,6 +1,6 @@
 import db from "#db/client";
-import { createDepartment } from "./queries/departments";
-import { createFaculty } from "./queries/faculty";
+import { createDepartment } from "#queries/departments";
+// import { createFaculty } from "./queries/faculty";
 
 await db.connect();
 await seed();
@@ -17,13 +17,8 @@ async function seed() {
             images: imgData,
             contact_info: "fake-email@fake-email.com"
         };
+            await createDepartment(department);
 
-        for(let i = 0; i < 10; i++) {
-        const department = {
-            name: "Department" + i,
-            description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec quis commodo elit, in finibus libero. Proin venenatis quam tortor, id euismod ligula dapibus nec.",
-            images: imgData,
-            contact_info: "fake-email@fake-email.com"
-        };
+        //add seeding for faculty
     };
-}};
+};
