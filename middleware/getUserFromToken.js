@@ -8,6 +8,9 @@ export default async function getUserFromToken(req, res, next) {
   }
 
   const token = authorization.split(" ")[1];
+
+  if (!token) return next();
+
   const id = await validateJWT(token);
 
   if (!id) {
