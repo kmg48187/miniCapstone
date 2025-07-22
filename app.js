@@ -5,6 +5,7 @@ import cors from "cors";
 import getUserFromToken from "#middleware/getUserFromToken";
 import testRouter from "#api/test";
 import usersRouter from "#api/users";
+import departmentsRouter from "#api/departments";
 
 const app = express();
 export default app;
@@ -18,6 +19,7 @@ app.use(getUserFromToken);
 app.use("/users", usersRouter);
 app.use("/test", testRouter);
 app.use("/faculty", facultyRouter);
+app.use("/departments", departmentsRouter);
 
 app.get("/", (req, res) => {
   res.send("API Online ✅");
