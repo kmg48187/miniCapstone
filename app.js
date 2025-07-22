@@ -10,10 +10,9 @@ import departmentsRouter from "#api/departments";
 const app = express();
 export default app;
 
-app.use(cors({ origin: "/localhost/3000" }));
+app.use(cors({ origin: /localhost/ }));
 app.use(express.json({ limit: "5mb" }));
 app.use(morgan("dev"));
-
 app.use(getUserFromToken);
 
 app.use("/users", usersRouter);
