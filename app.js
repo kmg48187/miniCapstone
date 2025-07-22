@@ -9,7 +9,7 @@ import usersRouter from "#api/users";
 const app = express();
 export default app;
 
-app.use(cors());
+app.use(cors({ origin: "/localhost/3000" }));
 app.use(express.json({ limit: "5mb" }));
 app.use(morgan("dev"));
 

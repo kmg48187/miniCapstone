@@ -5,7 +5,7 @@ CREATE DATABASE minicapstone;
 \c minicapstone;
 
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
-
+DROP TABLE IF EXISTS users;
 CREATE TABLE users(
     id serial PRIMARY KEY,
     email text NOT NULL UNIQUE,
@@ -14,9 +14,8 @@ CREATE TABLE users(
     is_admin boolean NOT NULL
 );
 
-
-DROP TABLE IF EXISTS departments;
 DROP TABLE IF EXISTS faculty;
+DROP TABLE IF EXISTS departments;
 
 CREATE TABLE departments(
     id serial PRIMARY KEY,
@@ -33,6 +32,6 @@ CREATE TABLE faculty(
     email text NOT NULL,
     bio text NOT NULL,
     profile_pic text,
-    department_id interger NOT NULL REFERENCES departments(id) ON DELETE CASCADE
+    department_id integer NOT NULL REFERENCES departments(id) ON DELETE CASCADE
 )
 

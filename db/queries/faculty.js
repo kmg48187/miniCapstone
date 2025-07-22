@@ -32,16 +32,22 @@ export async function getFacultyByDepartmentId(id) {
   return faculty;
 }
 
-export async function createFaculty(name, email, bio, profile_pic) {
+export async function createFaculty(
+  name,
+  email,
+  bio,
+  profile_pic,
+  department_id
+) {
   const sql = `
   INSERT INTO faculty
-    (name, email, bio, profile_pic)
+    (name, email, bio, profile_pic, department_id)
   VALUES
-    ($1, $2, $3, $4)
+    ($1, $2, $3, $4, $5)
   RETURNING *
   `;
   const {
     rows: [faculty],
-  } = await db.query(sql, [name, email, bio, profile_pic]);
+  } = await db.query(sql, [name, email, bio, profile_pic, department_id]);
   return faculty;
 }
