@@ -7,7 +7,16 @@ export async function getFaculty() {
   `;
   const { rows: faculty } = await db.query(sql);
   return faculty;
+}
 
+export async function getFacultyById(id) {
+  const sql = `
+  SELECT *
+  FROM faculty
+  where id = $1
+  `;
+  const { rows: faculty } = await db.query(sql, [id]);
+  return faculty;
 }
 
 export async function getFacultyByDepartmentId(id) {
@@ -23,7 +32,7 @@ export async function getFacultyByDepartmentId(id) {
   return faculty;
 }
 
-  export async function createFaculty(name, email, bio, profile_pic) {
+export async function createFaculty(name, email, bio, profile_pic) {
   const sql = `
   INSERT INTO faculty
     (name, email, bio, profile_pic)

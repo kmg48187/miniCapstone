@@ -20,7 +20,7 @@ app.use("/test", testRouter);
 app.use("/faculty", facultyRouter);
 
 app.get("/", (req, res) => {
-    res.send("API Online ✅");
+  res.send("API Online ✅");
 });
 
 app.use((err, req, res, next) => {
@@ -39,6 +39,3 @@ app.use((err, req, res, next) => {
   console.error(err);
   res.status(500).send("Sorry! Something went wrong.");
 });
-});
-
-
