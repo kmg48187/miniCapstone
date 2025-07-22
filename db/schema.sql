@@ -30,6 +30,7 @@ CREATE TABLE departments(
 CREATE TABLE faculty(
     id serial PRIMARY KEY,
     name text UNIQUE NOT NULL,
+    email text NOT NULL,
     bio text NOT NULL,
     profile_pic text,
     department_id interger NOT NULL REFERENCES departments(id) ON DELETE CASCADE

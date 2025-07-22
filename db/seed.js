@@ -1,6 +1,7 @@
 import db from "#db/client";
 import { createDepartment } from "#queries/departments";
-// import { createFaculty } from "./queries/faculty";
+import { createFaculty } from "./queries/faculty";
+import { createFaculty } from "./queries/faculty";
 
 await db.connect();
 await seed();
@@ -19,6 +20,14 @@ async function seed() {
         };
             await createDepartment(department);
 
-        //add seeding for faculty
+        for(let i = 0; i < 10; i++) {
+        const faculty = {
+            name: "Employee" + i, 
+            email: "fake-email@fake-email.com",
+            bio: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec quis commodo elit, in finibus libero. Proin venenatis quam tortor, id euismod ligula dapibus nec.",
+            profile_pic: imgData,
+            departmen_id: Math.floor(Math.random() * 10),
+        };
+            await createFaculty(faculty);
     };
-};
+}};
