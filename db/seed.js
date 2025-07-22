@@ -33,7 +33,7 @@ async function seed() {
       email: "fake-email@fake-email.com",
       bio: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec quis commodo elit, in finibus libero. Proin venenatis quam tortor, id euismod ligula dapibus nec.",
       profile_pic: imgData,
-      department_id: Math.floor(Math.random() * 10),
+      department_id: Math.floor(Math.random() * 9) + 1,
     };
     await createFaculty(
       faculty.name,
