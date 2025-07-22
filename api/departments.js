@@ -15,7 +15,7 @@ import { requireUser } from "#middleware/requireUser";
 router
   .route("/")
   .get(async (req, res) => {
-    const departments = await getDepartments;
+    const departments = await getDepartments();
     res.send(departments);
   })
   .post(requireUser, async (req, res) => {
