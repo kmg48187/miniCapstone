@@ -1,12 +1,47 @@
 import db from "#db/client";
 
+export async function createFaculty({
+  name,
+  email,
+  bio,
+  profile_pic,
+  department_id,
+}) {
+  const sql = `
+  INSERT INTO faculty
+    (name, email, bio, profile_pic, department_id)
+  VALUES
+    ($1, $2, $3, $4, $5)
+  RETURNING *
+  `;
+  const {
+    rows: [faculty],
+  } = await db.query(sql, [name, email, bio, profile_pic, department_id]);
+  return faculty;
+}
+
+export async function deleteFacultyById(id) {
+  const SQL = `
+  DELETE FROM faculty
+  WHERE id = $1
+  RETURNING *
+  `;
+
+  const {
+    rows: [faculty],
+  } = await db.query(SQL, [id]);
+
+  return faculty;
+}
+
 export async function getFaculty() {
   const sql = `
   SELECT *
   FROM faculty
   `;
-  const { rows: faculty } = await db.query(sql);
-  return faculty;
+  const { rows } = await db.query(sql);
+
+  return rows;
 }
 
 export async function getFacultyById(id) {
@@ -57,31 +92,5 @@ export async function updateFaculty(id, fields) {
     rows: [faculty],
   } = await db.query(SQL, [id, ...values]);
 
-  console.log("Sets: ", sets);
-  console.log("Updates: ", updates);
-  console.log("Values: ", values);
-  console.log("SQL: ", SQL);
-  console.log("Faculty: ", faculty);
-
   return faculty || undefined;
-}
-
-export async function createFaculty({
-  name,
-  email,
-  bio,
-  profile_pic,
-  department_id,
-}) {
-  const sql = `
-  INSERT INTO faculty
-    (name, email, bio, profile_pic, department_id)
-  VALUES
-    ($1, $2, $3, $4, $5)
-  RETURNING *
-  `;
-  const {
-    rows: [faculty],
-  } = await db.query(sql, [name, email, bio, profile_pic, department_id]);
-  return faculty;
 }
