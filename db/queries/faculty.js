@@ -21,24 +21,22 @@ export async function getFacultyById(id) {
 
 export async function getFacultyByDepartmentId(id) {
   const sql = `
-  SELECT faculty.*
-  FROM
-    faculty
-    JOIN department_faculty ON department_faculty.faculty_id = faculty.id
-    JOIN department ON department.id = department_faculty.department_id
-  WHERE department.id = $1
+  SELECT *
+  FROM faculty
+  WHERE department_id = $1
   `;
-  const { rows: faculty } = await db.query(sql, [id]);
-  return faculty;
+  const { rows } = await db.query(sql, [id]);
+
+  return rows;
 }
 
-export async function createFaculty(
+export async function createFaculty({
   name,
   email,
   bio,
   profile_pic,
-  department_id
-) {
+  department_id,
+}) {
   const sql = `
   INSERT INTO faculty
     (name, email, bio, profile_pic, department_id)

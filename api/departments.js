@@ -1,4 +1,5 @@
 import express from "express";
+import requireBody from "#middleware/requireBody";
 const router = express.Router();
 export default router;
 
@@ -11,34 +12,26 @@ import {
 } from "#db/queries/departments";
 
 import { requireUser } from "#middleware/requireUser";
+import { getFacultyByDepartmentId } from "#db/queries/faculty";
 
 router
   .route("/")
   .get(async (req, res) => {
     const departments = await getDepartments();
-    res.send(departments);
+    res.json(departments);
   })
-  .post(requireUser, async (req, res) => {
-    if (!req.body) return res.status(400).send("Request body is requied.");
+  .post(
+    requireUser,
+    requireBody(["name", "description", "banner_image", "contact_info"]),
+    async (req, res) => {
+      const department = await createDepartment(req.body);
 
-    const { name, description, banner_image, contact_info } = req.body;
-    if (!name || !description || !banner_image || !contact_info)
-      return res
-        .status(400)
-        .send(
-          "Missing required fields: name, description, banner_image, contact_info."
-        );
-    const department = await createDepartment({
-      name,
-      description,
-      banner_image,
-      contact_info,
-    });
-    res.status(201).send(department);
-  });
+      res.status(201).json(department);
+    }
+  );
 
 router.param("id", async (req, res, next, id) => {
-  const department = getDepartmentById(id);
+  const department = await getDepartmentById(id);
   if (!department) return res.status(404).send("Department not found.");
 
   req.department = department;
@@ -56,22 +49,19 @@ router
   })
 
   .put(requireUser, async (req, res) => {
-    if (!req.body) return res.status(400).send("Request body is requied.");
+    const { ...fields } = req.body;
 
-    const { name, description, images, contact_info } = req.body;
-    if (!name || !description || !banner_image || !contact_info)
-      return res
-        .status(400)
-        .send(
-          "Missing required fields: name, description, images, contact_info."
-        );
+    if (Object.entries(fields).length === 0) {
+      return res.status(400).json("No fields found to update.");
+    }
 
-    const department = await updateDepartment({
-      id: req.department.id,
-      name,
-      description,
-      banner_image,
-      contact_info,
-    });
-    res.send(department);
+    const department = await updateDepartment(req.department.id, fields);
+
+    res.json(department);
   });
+
+router.get("/:id/faculty", async (req, res) => {
+  const faculty = await getFacultyByDepartmentId(req.department.id);
+
+  res.status(200).json(faculty);
+});

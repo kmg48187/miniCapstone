@@ -45,18 +45,12 @@ export async function validateAccount({ email, password }) {
 
 export function createJWT(id) {
   const token = jwt.sign({ id }, process.env.JWT_SECRET, {
-    expiresIn: 3600,
+    expiresIn: "7d",
   });
 
   return token;
 }
 
 export async function validateJWT(token) {
-  try {
-    const verify = jwt.verify(token, process.env.JWT_SECRET);
-
-    return verify.id;
-  } catch (error) {
-    return null;
-  }
+  return jwt.verify(token, process.env.JWT_SECRET);
 }

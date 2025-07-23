@@ -13,6 +13,7 @@ export default app;
 app.use(cors({ origin: /localhost/ }));
 app.use(express.json({ limit: "5mb" }));
 app.use(morgan("dev"));
+
 app.use(getUserFromToken);
 
 app.use("/users", usersRouter);

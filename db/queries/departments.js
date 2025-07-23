@@ -1,11 +1,11 @@
 import db from "#db/client";
 
-export async function createDepartment(
+export async function createDepartment({
   name,
   description,
   banner_image,
-  contact_info
-) {
+  contact_info,
+}) {
   const sql = `
     INSERT INTO departments
        (name, description, banner_image, contact_info)
@@ -40,37 +40,37 @@ export async function getDepartmentById(id) {
   return department;
 }
 
-export async function updateDepartment(
-  id,
-  name,
-  bio,
-  banner_image,
-  contact_info
-) {
-  const sql = `
+export async function updateDepartment(id, fields) {
+  const updates = Object.entries(fields).filter(
+    ([k, v]) => v !== undefined && v !== null
+  );
+
+  const sets = updates.map(([key], i) => `${key} = $${i + 2}`);
+  const values = updates.map(([_, value]) => value);
+
+  const SQL = `
     UPDATE departments
-    SET
-        name = $2,
-        bio = $3, 
-        banner_image = $4,
-        contact_info = $5
-        WHERE id = $1
-        RETURNING * 
-        `;
+    SET ${sets.join(", ")}
+    WHERE id = $1
+    RETURNING *
+    `;
+
   const {
     rows: [department],
-  } = await db.query(sql[(id, name, bio, banner_image, contact_info)]);
-  return department;
+  } = await db.query(SQL, [id, ...values]);
+
+  return department || undefined;
 }
 
 export async function deleteDepartment(id) {
   const sql = `
-    DELETE from departments
+    DELETE FROM departments
     WHERE id = $1
     RETURNING * 
     `;
   const {
     rows: [department],
-  } = await db.query(sql[id]);
+  } = await db.query(sql, [id]);
+
   return department;
 }

@@ -6,6 +6,9 @@ CREATE DATABASE minicapstone;
 
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
 DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS faculty;
+DROP TABLE IF EXISTS departments;
+
 CREATE TABLE users(
     id serial PRIMARY KEY,
     email text NOT NULL UNIQUE,
@@ -13,9 +16,6 @@ CREATE TABLE users(
     password text NOT NULL,
     is_admin boolean NOT NULL
 );
-
-DROP TABLE IF EXISTS faculty;
-DROP TABLE IF EXISTS departments;
 
 CREATE TABLE departments(
     id serial PRIMARY KEY,
