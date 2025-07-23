@@ -2,13 +2,30 @@ import express from "express";
 const router = express.Router();
 export default router;
 
-import { deleteFacultyById, getFaculty, getFacultyById, updateFaculty } from "#db/queries/faculty";
+import {
+  deleteFacultyById,
+  getFaculty,
+  getFacultyById,
+  updateFaculty,
+  createFaculty,
+} from "#db/queries/faculty";
 import { requireUser } from "#middleware/requireUser";
+import requireBody from "#middleware/requireBody";
 
-router.route("/").get(async (req, res) => {
-  const faculty = await getFaculty();
-  res.send(faculty);
-});
+router
+  .route("/")
+  .get(async (req, res) => {
+    const faculty = await getFaculty();
+    res.send(faculty);
+  })
+  .post(
+    requireUser,
+    requireBody(["name", "email", "bio", "profile_pic"]),
+    async (req, res) => {
+      const faculty = await createFaculty(req.body);
+      res.status(201).json(faculty);
+    }
+  );
 
 router.param("id", async (req, res, next, id) => {
   const faculty = await getFacultyById(id);
