@@ -21,11 +21,11 @@ export async function createDepartment({
 
 export async function getDepartments() {
   const sql = `
-    SELECT * 
-    FROM departments
+    SELECT * FROM departments
     `;
-  const { rows: departments } = await db.query(sql);
-  return departments;
+  const { rows } = await db.query(sql);
+
+  return rows;
 }
 
 export async function getDepartmentById(id) {
@@ -34,16 +34,23 @@ export async function getDepartmentById(id) {
         FROM departments
         WHERE id = $1
         `;
+
   const {
     rows: [department],
   } = await db.query(sql, [id]);
+
   return department;
 }
 
 export async function updateDepartment(id, fields) {
+  const allowed = ["name", "description", "banner_image", "contact_info"];
   const updates = Object.entries(fields).filter(
-    ([k, v]) => v !== undefined && v !== null
+    ([k, v]) => v !== undefined && v !== null && allowed.includes(k)
   );
+
+  if (updates.length === 0) {
+    throw new Error("No valid fields to update.");
+  }
 
   const sets = updates.map(([key], i) => `${key} = $${i + 2}`);
   const values = updates.map(([_, value]) => value);

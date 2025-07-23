@@ -13,9 +13,12 @@ export async function getFacultyById(id) {
   const sql = `
   SELECT *
   FROM faculty
-  where id = $1
+  WHERE id = $1
   `;
-  const { rows: faculty } = await db.query(sql, [id]);
+  const {
+    rows: [faculty],
+  } = await db.query(sql, [id]);
+
   return faculty;
 }
 
@@ -28,6 +31,39 @@ export async function getFacultyByDepartmentId(id) {
   const { rows } = await db.query(sql, [id]);
 
   return rows;
+}
+
+export async function updateFaculty(id, fields) {
+  const allowed = ["name", "email", "bio", "profile_pic", "department_id"];
+  const updates = Object.entries(fields).filter(
+    ([k, v]) => v !== undefined && v !== null && allowed.includes(k)
+  );
+
+  if (updates.length === 0) {
+    throw new Error("No valid fields to update.");
+  }
+
+  const sets = updates.map(([key], i) => `${key} = $${i + 2}`);
+  const values = updates.map(([_, value]) => value);
+
+  const SQL = `
+    UPDATE faculty
+    SET ${sets.join(", ")}
+    WHERE id = $1
+    RETURNING *
+    `;
+
+  const {
+    rows: [faculty],
+  } = await db.query(SQL, [id, ...values]);
+
+  console.log("Sets: ", sets);
+  console.log("Updates: ", updates);
+  console.log("Values: ", values);
+  console.log("SQL: ", SQL);
+  console.log("Faculty: ", faculty);
+
+  return faculty || undefined;
 }
 
 export async function createFaculty({

@@ -12,7 +12,12 @@ import {
 } from "#db/queries/departments";
 
 import { requireUser } from "#middleware/requireUser";
-import { getFacultyByDepartmentId } from "#db/queries/faculty";
+import {
+  createFaculty,
+  getFacultyByDepartmentId,
+  getFacultyById,
+  updateFaculty,
+} from "#db/queries/faculty";
 
 router
   .route("/")
@@ -47,7 +52,6 @@ router
     await deleteDepartment(req.department.id);
     res.sendStatus(204);
   })
-
   .put(requireUser, async (req, res) => {
     const { ...fields } = req.body;
 
@@ -57,11 +61,23 @@ router
 
     const department = await updateDepartment(req.department.id, fields);
 
-    res.json(department);
+    res.status(200).json(department);
   });
 
-router.get("/:id/faculty", async (req, res) => {
-  const faculty = await getFacultyByDepartmentId(req.department.id);
+router
+  .route("/:id/faculty")
+  .get(requireUser, async (req, res) => {
+    const faculty = await getFacultyByDepartmentId(req.department.id);
 
-  res.status(200).json(faculty);
-});
+    res.status(200).json(faculty);
+  })
+  .post(
+    requireUser,
+    requireBody(["name", "email", "bio", "profile_pic"]),
+    async (req, res) => {
+      const payload = { department_id: req.department.id, ...req.body };
+      const employee = await createFaculty(payload);
+
+      res.status(201).json(employee);
+    }
+  );
