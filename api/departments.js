@@ -66,7 +66,7 @@ router
 
 router
   .route("/:id/faculty")
-  .get(requireUser, async (req, res) => {
+  .get(async (req, res) => {
     const faculty = await getFacultyByDepartmentId(req.department.id);
 
     res.status(200).json(faculty);
