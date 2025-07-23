@@ -44,11 +44,9 @@ export async function validateAccount({ email, password }) {
 }
 
 export function createJWT(id) {
-  const token = jwt.sign({ id }, process.env.JWT_SECRET, {
+  return jwt.sign({ id }, process.env.JWT_SECRET, {
     expiresIn: "7d",
   });
-
-  return token;
 }
 
 export async function validateJWT(token) {
